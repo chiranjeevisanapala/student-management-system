@@ -1,0 +1,71 @@
+services:
+  # ============================================================================
+  # PostgreSQL Relational Database Service
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: sms_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-student_management_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-student_management_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sms_network
+
+  # ============================================================================
+  # Rust Loco Backend API Service
+  # ============================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sms_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      LOCO_ENV: production
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-student_management_db}
+      JWT_SECRET: ${JWT_SECRET:-9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a10f9e8d7c6b5a4f3e2d1c0b9a8f7}
+      PORT: 5150
+      HOST: 0.0.0.0
+      RUST_LOG: info
+    ports:
+      - "5150:5150"
+    networks:
+      - sms_network
+
+  # ============================================================================
+  # React + Vite + Nginx Frontend Service
+  # ============================================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sms_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - sms_network
+
+networks:
+  sms_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

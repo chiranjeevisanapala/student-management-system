@@ -1,0 +1,20 @@
+logger:
+  enable: false
+  pretty_backtrace: false
+  level: error
+  format: compact
+
+server:
+  port: 5151
+  host: http://localhost
+
+database:
+  uri: {{ get_env(name="DATABASE_URL", default="postgres://postgres:postgres@localhost:5432/student_management_db") }}
+  enable_logging: false
+  min_connections: 1
+  max_connections: 2
+
+auth:
+  jwt:
+    secret: "test_jwt_secret_key_1234567890"
+    expiration: 3600

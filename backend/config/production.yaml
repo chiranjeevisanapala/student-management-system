@@ -1,0 +1,39 @@
+logger:
+  enable: true
+  pretty_backtrace: false
+  level: info
+  format: json
+
+server:
+  port: <%= get_env(name="PORT", default="5150") %>
+  host: 0.0.0.0
+  middlewares:
+    cors:
+      enable: true
+      allow_origins:
+        - "*"
+      allow_headers:
+        - "*"
+      allow_methods:
+        - "GET"
+        - "POST"
+        - "PUT"
+        - "PATCH"
+        - "DELETE"
+        - "OPTIONS"
+
+database:
+  uri: "<%= get_env(name='DATABASE_URL', default='postgres://postgres:postgres@localhost:5432/student_management_db') %>"
+  enable_logging: false
+  min_connections: 2
+  max_connections: 20
+  connect_timeout: 5000
+  idle_timeout: 5000
+
+auth:
+  jwt:
+    secret: "<%= get_env(name='JWT_SECRET', default='production_student_management_super_secure_jwt_secret_key_2026') %>"
+    expiration: 604800
+
+workers:
+  mode: ForegroundBlocking

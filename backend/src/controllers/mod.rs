@@ -1,0 +1,14 @@
+pub mod admin;
+pub mod announcement;
+pub mod assignment;
+pub mod attendance;
+pub mod auth;
+pub mod course;
+pub mod examination;
+pub mod faculty;
+pub mod material;
+pub mod notification;
+pub mod request;
+pub mod result;
+pub mod student;
+pub mod timetable;
