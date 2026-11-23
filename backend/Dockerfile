@@ -2,7 +2,7 @@
 # Multi-stage Dockerfile for Loco.rs Rust Backend
 # ==============================================================================
 # Build Stage
-FROM rust:1.80-slim-bullseye AS builder
+FROM rust:1.80-slim-bookworm AS builder
 
 WORKDIR /usr/src/app
 
@@ -29,13 +29,13 @@ RUN cargo build --release --bin backend-cli
 # ==============================================================================
 # Production Runtime Stage
 # ==============================================================================
-FROM debian:bullseye-slim AS runner
+FROM debian:bookworm-slim AS runner
 
 WORKDIR /app
 
 # Install runtime libraries
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libssl1.1 \
+    libssl3 \
     libpq5 \
     ca-certificates \
     curl \
