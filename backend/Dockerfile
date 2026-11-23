@@ -2,7 +2,7 @@
 # Multi-stage Dockerfile for Loco.rs Rust Backend
 # ==============================================================================
 # Build Stage
-FROM rust:1.85-slim-bookworm AS builder
+FROM rust:1.94-slim-bookworm AS builder
 
 WORKDIR /usr/src/app
 
