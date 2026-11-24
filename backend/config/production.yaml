@@ -6,7 +6,8 @@ logger:
 
 server:
   port: <%= get_env(name="PORT", default="5150") %>
-  host: 0.0.0.0
+  binding: 0.0.0.0
+  host: https://student-management-system-ezb6.onrender.com
   middlewares:
     cors:
       enable: true
